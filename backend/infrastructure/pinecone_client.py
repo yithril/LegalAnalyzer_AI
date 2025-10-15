@@ -11,15 +11,15 @@ class PineconeClient:
     For MVP, we'll use a single default index.
     """
     
-    def __init__(self, api_key: Optional[str] = None, environment: Optional[str] = None):
+    def __init__(self, api_key: Optional[str] = None, region: Optional[str] = None):
         """Initialize Pinecone client.
         
         Args:
             api_key: Pinecone API key. Uses settings if not provided.
-            environment: Pinecone environment/region. Uses settings if not provided.
+            region: Pinecone region. Uses settings if not provided.
         """
         self.api_key = api_key or settings.pinecone_api_key
-        self.environment = environment or settings.pinecone_environment
+        self.region = region or settings.pinecone_region
         self.client = None
         self.initialized = False
     
@@ -60,7 +60,7 @@ class PineconeClient:
             name=index_name,
             dimension=dimension,
             metric=metric,
-            spec=ServerlessSpec(cloud="aws", region=self.environment)
+            spec=ServerlessSpec(cloud="aws", region=self.region)
         )
     
     async def upsert_vectors(

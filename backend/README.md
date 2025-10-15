@@ -4,15 +4,22 @@
 Desktop app for AI-powered legal document analysis. Each org gets **completely isolated infrastructure** (no shared resources).
 
 **Scale**: 100k+ documents per case  
-**Architecture**: Vertical Slice (one business function = one file)  
+**Architecture**: Layered (Controllers → Services → Repositories → Infrastructure)  
 **Deployment**: Desktop app + Backend API (cloud or on-prem, decided later)
 
 ## Project Structure
 ```
 backend/
-  infrastructure/     ← DB, Pinecone, File Storage clients
-  core/              ← Configuration
-  features/          ← Business functions (one per file)
+  controllers/        ← HTTP endpoints (thin layer, inject services only)
+  services/           ← Business logic
+    document_classifier_service.py
+    text_extraction/  ← Extraction strategies (PDF, DOCX, OCR)
+    summarization/    ← Summarization services
+  repositories/       ← Data access layer
+  dtos/              ← Request/Response models
+  infrastructure/    ← Shared providers (DB, Storage, Pinecone)
+  core/              ← Configuration, models, utilities
+  tests/             ← Tests (using real implementations, no mocks)
   main.py
 ```
 
@@ -21,12 +28,203 @@ backend/
 ## Tech Stack
 - **FastAPI** + **Uvicorn** + **Poetry**
 - **Tortoise ORM** + **Aerich** (migrations)
-- **PostgreSQL** (or SQLite for dev)
-- **Pinecone** - Vector DB
-- **MinIO** - S3-compatible object storage (Docker with volumes)
-- **PyMuPDF**, **python-docx**, **openpyxl** - Document parsing
+- **PostgreSQL** - Metadata + summaries
+- **Pinecone** - Vector DB for semantic search
+- **MinIO** - S3-compatible object storage (original files + chunks)
+- **Elasticsearch** (optional) - Full-text keyword search
+- **PyMuPDF**, **python-docx** - Document parsing
+- **Llama 3.1 70B** (local via Ollama) - Summarization & RAG
 - **sentence-transformers** - Embeddings
-- AI models handled per-agent (no shared client)
+
+---
+
+## Data Architecture & Processing Flow
+
+### Complete Document Processing Pipeline
+
+```
+1. Upload Document
+   ↓
+2. Validate (size, type, security)
+   ↓
+3. Classify Document Type (extension-based for MVP)
+   └─→ TEXT_EXTRACTABLE (PDF, DOCX, TXT)
+   └─→ OCR_NEEDED (images - Phase 2)
+   └─→ MULTIMODAL (complex PDFs - Phase 3)
+   ↓
+4. Extract Text (strategy pattern based on type)
+   ↓
+5. Smart Chunking
+   └─→ Detect legal structure (SECTION, ARTICLE, etc.)
+   └─→ Use Llama to identify semantic boundaries
+   └─→ Add overlap between chunks
+   ↓
+6. Save Chunks to MinIO
+   └─→ documents/doc_123/chunks.json
+   ↓
+7. Save Chunk Metadata to PostgreSQL
+   └─→ chunk_index, minio_path, summary, section_type
+   ↓
+8. Hierarchical Summarization
+   └─→ Read chunks from MinIO
+   └─→ Summarize in layers: 20 chunks → 4 summaries → 1 final
+   └─→ Save executive summary to PostgreSQL
+   ↓
+9. Generate Embeddings (from original chunk text)
+   ↓
+10. Store in Pinecone (vector + minimal metadata)
+```
+
+### Data Storage Strategy
+
+**MinIO (Object Storage - Cheap & Scalable):**
+```
+documents/
+  doc_123/
+    original.pdf           ← Original uploaded file
+    chunks.json            ← All chunks with text + summaries
+    extracted_text.txt     ← Full extracted text (optional)
+```
+
+**PostgreSQL (Metadata + Summaries):**
+```sql
+Documents:
+- id, filename, minio_key (link to original file)
+- summary (executive summary - for browsing)
+- document_type, status, metadata
+- created_at, updated_at
+
+DocumentChunks:
+- id, document_id, chunk_index
+- minio_path (where full chunk text lives)
+- summary (chunk summary for quick context)
+- section_type, page_number, word_count
+- pinecone_id (link to vector DB)
+```
+
+**Pinecone (Semantic Search):**
+```python
+{
+  "id": "doc123_chunk5",
+  "values": [embedding of original text...],
+  "metadata": {
+    "document_id": 123,
+    "chunk_index": 5,
+    "summary": "This section discusses...",  # Human-readable context
+    "document_title": "Contract ABC",
+    "section_type": "obligations"
+  }
+}
+```
+
+**Elasticsearch (Optional - Full-Text Search):**
+```python
+{
+  "document_id": 123,
+  "chunk_index": 5,
+  "summary": "This section discusses termination...",  # Index summaries
+  "document_title": "Employment Contract",
+  "minio_path": "documents/doc_123/chunks.json"
+}
+```
+
+### Search & Retrieval Strategies
+
+**1. Browse Documents (PostgreSQL):**
+```
+Query: GET /documents
+Returns: List with executive summaries
+User sees: "Employment Contract - 5-year term, $100k salary..."
+```
+
+**2. Keyword Search (Elasticsearch or PostgreSQL full-text):**
+```
+Query: "non-compete clause"
+Elasticsearch → Exact keyword matches → Document IDs + highlights
+Returns: Documents with exact phrase matches
+```
+
+**3. Semantic Search (Pinecone):**
+```
+Query: "What documents discuss employee obligations?"
+Generate embedding → Pinecone search → Similar chunks
+Returns: Relevant documents even without exact keywords
+```
+
+**4. Hybrid Search (Best for production):**
+```
+Parallel:
+- Elasticsearch: Keyword matches
+- Pinecone: Semantic matches
+Merge & rank results
+Returns: Most relevant by both methods
+```
+
+### RAG Agent Workflow
+
+```
+User Question: "What are termination conditions in my contracts?"
+        ↓
+┌────────────────────────────┐
+│ 1. Question Analysis       │
+│    Extract key terms       │
+└────────────────────────────┘
+        ↓
+    ┌───┴────┐
+    ↓        ↓
+┌──────────┐ ┌──────────────┐
+│Pinecone  │ │Elasticsearch │  (Parallel search)
+│Semantic  │ │Keyword       │
+└──────────┘ └──────────────┘
+    ↓             ↓
+    Chunk IDs     Chunk IDs
+        ↓       ↓
+    ┌─────────────┐
+    │2. Merge     │
+    │   Results   │
+    └─────────────┘
+        ↓
+    Top 5-10 chunks
+        ↓
+┌────────────────────┐
+│3. Fetch Full Text │
+│   from MinIO       │
+└────────────────────┘
+        ↓
+┌────────────────────┐
+│4. Send to Llama    │
+│   with context     │
+└────────────────────┘
+        ↓
+┌────────────────────┐
+│5. Generate Answer  │
+│   with citations   │
+└────────────────────┘
+        ↓
+"Termination requires 30 days notice 
+(Contract ABC Section 7) and severance 
+per Section 8 (Employee Handbook p.12)."
+```
+
+### Why This Architecture?
+
+**Separation of Concerns:**
+- **MinIO**: Stores large text (cheap, scalable)
+- **PostgreSQL**: Metadata + summaries (fast queries, relations)
+- **Pinecone**: Semantic search (vector similarity)
+- **Elasticsearch**: Keyword search (optional, for speed)
+
+**Benefits:**
+- ✅ Don't bloat PostgreSQL with full text
+- ✅ Cheap storage in MinIO
+- ✅ Fast searches via Pinecone/Elasticsearch
+- ✅ Can scale each component independently
+- ✅ Summaries in PostgreSQL for quick browsing
+
+**Phase Implementation:**
+- **MVP**: MinIO + PostgreSQL + Pinecone (semantic search)
+- **Phase 2**: Add Elasticsearch (keyword search)
+- **Phase 3**: Multi-agent system (document agent + case law agent)
 
 ---
 

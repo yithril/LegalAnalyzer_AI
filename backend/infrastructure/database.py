@@ -1,7 +1,7 @@
 """Database provider for Tortoise ORM lifecycle management."""
 from typing import Optional
 from tortoise import Tortoise, connections
-from core.config import settings, TORTOISE_ORM
+from core.config import settings
 
 
 class DatabaseProvider:

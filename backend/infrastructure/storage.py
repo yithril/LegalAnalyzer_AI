@@ -123,6 +123,43 @@ class StorageClient:
         except S3Error as e:
             raise RuntimeError(f"Failed to download file: {e}")
     
+    async def download_partial(
+        self, 
+        bucket_name: str, 
+        object_name: str, 
+        offset: int = 0, 
+        length: int = 8192
+    ) -> bytes:
+        """Download only part of a file from MinIO (streaming/peeking).
+        
+        Useful for file type detection - only downloads first few KB.
+        
+        Args:
+            bucket_name: Name of the bucket.
+            object_name: Name/path of the object in the bucket.
+            offset: Byte offset to start reading from (default 0 = beginning).
+            length: Number of bytes to read (default 8KB).
+        
+        Returns:
+            Partial file data as bytes.
+        """
+        if not self.initialized:
+            raise RuntimeError("StorageClient not initialized. Call init() first.")
+        
+        try:
+            response = self.client.get_object(
+                bucket_name, 
+                object_name, 
+                offset=offset, 
+                length=length
+            )
+            data = response.read()
+            response.close()
+            response.release_conn()
+            return data
+        except S3Error as e:
+            raise RuntimeError(f"Failed to download partial file: {e}")
+    
     async def delete(self, bucket_name: str, object_name: str) -> None:
         """Delete a file from MinIO.
         

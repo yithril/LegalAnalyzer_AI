@@ -3,22 +3,28 @@ from fastapi import FastAPI
 from infrastructure.database import db_provider
 from infrastructure.pinecone_client import pinecone_client
 from infrastructure.storage import storage_client
+from controllers.case_controller import router as case_router
+from controllers.document_controller import router as document_router
 
 
 app = FastAPI(title="LegalDocs AI Backend", version="0.1.0")
+
+# Register routers
+app.include_router(case_router)
+app.include_router(document_router)
 
 
 @app.on_event("startup")
 async def startup():
     """Initialize infrastructure providers on app startup."""
     await db_provider.init()
-    print("✅ Database provider initialized")
+    print("Database provider initialized")
     
     await pinecone_client.init()
-    print("✅ Pinecone client initialized")
+    print("Pinecone client initialized")
     
     await storage_client.init()
-    print("✅ Storage client initialized")
+    print("Storage client initialized")
 
 
 @app.on_event("shutdown")
