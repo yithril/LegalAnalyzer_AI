@@ -1,5 +1,5 @@
 """OCR extraction strategy for scanned documents (Phase 2)."""
-from services.models import DocumentType
+from services.models import DocumentType, ExtractedDocument
 from services.text_extraction.base_extractor import BaseTextExtractor
 
 
@@ -10,7 +10,7 @@ class OCRExtractor(BaseTextExtractor):
         """Handle OCR_NEEDED documents."""
         return doc_type == DocumentType.OCR_NEEDED
     
-    def extract(self, file_data: bytes, filename: str) -> str:
+    async def extract(self, file_data: bytes, filename: str, document_id: int) -> ExtractedDocument:
         """
         Extract text using OCR.
         

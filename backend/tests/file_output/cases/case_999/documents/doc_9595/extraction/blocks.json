@@ -1,0 +1,47 @@
+{
+  "model": "page_blocks.v1",
+  "version": "extraction.v1",
+  "document_id": 9595,
+  "file_type": "txt",
+  "page_count": 1,
+  "total_blocks": 1,
+  "pages": [
+    {
+      "page_index": 0,
+      "width": null,
+      "height": null,
+      "byte_start": null,
+      "byte_end": null,
+      "char_start": 0,
+      "char_end": 918,
+      "token_estimate": 230,
+      "block_count": 1,
+      "overlap_prev_chars": null,
+      "hash": "1d9f0f45f764e47a",
+      "notes": null,
+      "blocks": [
+        {
+          "block_index": 0,
+          "block_id": "doc9595_p0_b0",
+          "text": "Message-ID: <20379972.1075855673249.JavaMail.evans@thyme>\r\nDate: Fri, 10 Dec 1999 07:00:00 -0800 (PST)\r\nFrom: phillip.allen@enron.com\r\nTo: naomi.johnston@enron.com\r\nSubject: \r\nMime-Version: 1.0\r\nContent-Type: text/plain; charset=us-ascii\r\nContent-Transfer-Encoding: 7bit\r\nX-From: Phillip K Allen\r\nX-To: Naomi Johnston\r\nX-cc: \r\nX-bcc: \r\nX-Folder: \\Phillip_Allen_Dec2000\\Notes Folders\\Discussion threads\r\nX-Origin: Allen-P\r\nX-FileName: pallen.nsf\r\n\r\nNaomi,\r\n\r\nThe two analysts that I have had contact with are Matt Lenhart  and Vishal \r\nApte.\r\nMatt will be represented by Jeff Shankman.\r\nVishal joined our group in October.  He was in the Power Trading Group for \r\nthe first 9 months.\r\nI spoke to Jim Fallon and we agreed that he should be in the excellent \r\ncategory.  I just don't want Vishal \r\nto go unrepresented since he changed groups mid year.\r\n\r\nCall me with questions.(x37041)\r\n\r\nPhillip Allen\r\nWest Gas Trading",
+          "kind": "paragraph",
+          "char_start": 0,
+          "char_end": 918,
+          "byte_start": null,
+          "byte_end": null,
+          "bbox": null,
+          "font": null,
+          "token_estimate": 230,
+          "lines": 31,
+          "kind_hint": null
+        }
+      ]
+    }
+  ],
+  "extraction_metadata": {
+    "original_size_bytes": 918,
+    "char_count": 918,
+    "encoding": "utf-8",
+    "normalized": "NFKC"
+  }
+}

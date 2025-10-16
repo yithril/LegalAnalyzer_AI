@@ -1,0 +1,47 @@
+{
+  "model": "page_blocks.v1",
+  "version": "extraction.v1",
+  "document_id": 106,
+  "file_type": "txt",
+  "page_count": 1,
+  "total_blocks": 1,
+  "pages": [
+    {
+      "page_index": 0,
+      "width": null,
+      "height": null,
+      "byte_start": null,
+      "byte_end": null,
+      "char_start": 0,
+      "char_end": 717,
+      "token_estimate": 179,
+      "block_count": 1,
+      "overlap_prev_chars": null,
+      "hash": "4cef13c155319d25",
+      "notes": null,
+      "blocks": [
+        {
+          "block_index": 0,
+          "block_id": "doc106_p0_b0",
+          "text": "Message-ID: <6790138.1075852712379.JavaMail.evans@thyme>\r\nDate: Tue, 24 Apr 2001 14:41:00 -0700 (PDT)\r\nFrom: john.arnold@enron.com\r\nTo: ina.rangel@enron.com\r\nSubject: Re: Power Group\r\nMime-Version: 1.0\r\nContent-Type: text/plain; charset=us-ascii\r\nContent-Transfer-Encoding: 7bit\r\nX-From: John Arnold\r\nX-To: Ina Rangel <Ina Rangel/HOU/ECT@ECT>\r\nX-cc: \r\nX-bcc: \r\nX-Folder: \\JARNOLD (Non-Privileged)\\Arnold, John\\Sent Items\r\nX-Origin: Arnold-J\r\nX-FileName: JARNOLD (Non-Privileged).pst\r\n\r\nyes\r\n\r\n\r\n\r\n\r\nIna Rangel\r\n04/23/2001 05:04 PM\r\nTo:\tJohn Arnold/HOU/ECT@ECT\r\ncc:\t \r\nSubject:\tPower Group\r\n\r\nJohn,\r\n\r\nHave you cleared everything with Presto about having to move over one row to make room for Fred's group?\r\n\r\n-Ina",
+          "kind": "paragraph",
+          "char_start": 0,
+          "char_end": 713,
+          "byte_start": null,
+          "byte_end": null,
+          "bbox": null,
+          "font": null,
+          "token_estimate": 178,
+          "lines": 32,
+          "kind_hint": null
+        }
+      ]
+    }
+  ],
+  "extraction_metadata": {
+    "original_size_bytes": 717,
+    "char_count": 717,
+    "encoding": "utf-8",
+    "normalized": "NFKC"
+  }
+}

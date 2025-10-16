@@ -1,0 +1,77 @@
+{
+  "model": "page_blocks.v1",
+  "version": "extraction.v1",
+  "document_id": 3240,
+  "file_type": "txt",
+  "page_count": 1,
+  "total_blocks": 3,
+  "pages": [
+    {
+      "page_index": 0,
+      "width": null,
+      "height": null,
+      "byte_start": null,
+      "byte_end": null,
+      "char_start": 0,
+      "char_end": 2589,
+      "token_estimate": 647,
+      "block_count": 3,
+      "overlap_prev_chars": null,
+      "hash": "bc5ff4de4eca98a5",
+      "notes": null,
+      "blocks": [
+        {
+          "block_index": 0,
+          "block_id": "doc3240_p0_b0",
+          "text": "Message-ID: <20564044.1075857796282.JavaMail.evans@thyme>\r\nDate: Sat, 9 Sep 2000 15:01:00 -0700 (PDT)\r\nFrom: davidpsmith@att.net\r\nTo: jamills@storm.ca\r\nSubject: new email address\r\nCc: kzweifel@indiana.edu, john.zufferli@enron.com, kyounger@lmumail.lmu.edu, \r\n\tryan.wormley@ceridian.com, mike.wolfe@ernexinc.com, \r\n\tbrett.x.vowles@msg.ameritech.com, dvvalenti@aol.com, jtower@istar.ca, \r\n\tcrikstephens@hotmail.com, tsmith@agraee.com, swbb@nwlink.com, \r\n\tjoshsilver@canada.com, jdsilver1@mail.sprint.ca, \r\n\tjoanna.silver@redklay.com, syscokid@bellsouth.net, \r\n\tseansh@attachmate.com, darcy@dialin.net, dshaver@pacbell.net, \r\n\tjrosen@cadiesel.com, bmraynor@mq.psd.k12.ca.us, john@poyser.com, \r\n\tkerry.pond@edu.gov.on.ca, lpeden@westarinsurance.com\r\nMime-Version: 1.0\r\nContent-Type: text/plain; charset=us-ascii\r\nContent-Transfer-Encoding: 7bit\r\nBcc: kzweifel@indiana.edu, john.zufferli@enron.com, kyounger@lmumail.lmu.edu, \r\n\tryan.wormley@ceridian.com, mike.wolfe@ernexinc.com, \r\n\tbrett.x.vowles@msg.ameritech.com, dvvalenti@aol.com, jtower@istar.ca, \r\n\tcrikstephens@hotmail.com, tsmith@agraee.com, swbb@nwlink.com, \r\n\tjoshsilver@canada.com, jdsilver1@mail.sprint.ca, \r\n\tjoanna.silver@redklay.com, syscokid@bellsouth.net, \r\n\tseansh@attachmate.com, darcy@dialin.net, dshaver@pacbell.net, \r\n\tjrosen@cadiesel.com, bmraynor@mq.psd.k12.ca.us, john@poyser.com, \r\n\tkerry.pond@edu.gov.on.ca, lpeden@westarinsurance.com\r\nX-From: davidpsmith@att.net\r\nX-To: jamills@storm.ca (Jenn Mills)\r\nX-cc: kzweifel@indiana.edu (kurty-kurt zweifel), john.zufferli@enron.com (john zufferli), kyounger@lmumail.lmu.edu (Kelly Younger), Ryan.Wormley@ceridian.com (ryan wormley), Mike.Wolfe@ernexinc.com (Mikey Wolfe), brett.x.Vowles@msg.ameritech.com (brett Vowles), dvvalenti@aol.com (dennis valenti), jtower@istar.ca (Jason Tower), crikstephens@hotmail.com (Chris Stephens), tsmith@agraee.com (Tim Smith), swbb@nwlink.com (scotty smith), joshsilver@canada.com (Josh Silver), jdsilver1@mail.sprint.ca (Jon Silver), joanna.silver@redklay.com (Joanna Kubow Silver), syscokid@bellsouth.net (Jeff Silver), SEANSH@Attachmate.com (Sean Shiotani), darcy@dialin.net (darcy shaw), dshaver@pacbell.net (dan SHAVER), jrosen@cadiesel.com (JASON ROSEN), BMRaynor@mq.psd.k12.ca.us (Beth Raynor), john@poyser.com (John Poyser), Kerry.Pond@edu.gov.on.ca (Kerry Pond), lpeden@westarinsurance.com (Lisa Peden)\r\nX-bcc: \r\nX-Folder: \\John_Zufferlie_Dec2000\\Notes Folders\\Discussion threads\r\nX-Origin: Zufferlie-J\r\nX-FileName: jzuffer.nsf\r\n\r\ndavid_p_smith@hotmail.com",
+          "kind": "paragraph",
+          "char_start": 0,
+          "char_end": 2516,
+          "byte_start": null,
+          "byte_end": null,
+          "bbox": null,
+          "font": null,
+          "token_estimate": 629,
+          "lines": 35,
+          "kind_hint": null
+        },
+        {
+          "block_index": 1,
+          "block_id": "doc3240_p0_b1",
+          "text": "davidpsmith@worldnet.att.net null & void as of sept13th.",
+          "kind": "paragraph",
+          "char_start": 2518,
+          "char_end": 2574,
+          "byte_start": null,
+          "byte_end": null,
+          "bbox": null,
+          "font": null,
+          "token_estimate": 14,
+          "lines": 1,
+          "kind_hint": null
+        },
+        {
+          "block_index": 2,
+          "block_id": "doc3240_p0_b2",
+          "text": "later\nsmith:)",
+          "kind": "paragraph",
+          "char_start": 2576,
+          "char_end": 2589,
+          "byte_start": null,
+          "byte_end": null,
+          "bbox": null,
+          "font": null,
+          "token_estimate": 3,
+          "lines": 2,
+          "kind_hint": null
+        }
+      ]
+    }
+  ],
+  "extraction_metadata": {
+    "original_size_bytes": 2589,
+    "char_count": 2589,
+    "encoding": "utf-8",
+    "normalized": "NFKC"
+  }
+}

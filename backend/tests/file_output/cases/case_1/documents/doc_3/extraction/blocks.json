@@ -1,0 +1,77 @@
+{
+  "model": "page_blocks.v1",
+  "version": "extraction.v1",
+  "document_id": 3,
+  "file_type": "txt",
+  "page_count": 1,
+  "total_blocks": 3,
+  "pages": [
+    {
+      "page_index": 0,
+      "width": null,
+      "height": null,
+      "byte_start": null,
+      "byte_end": null,
+      "char_start": 0,
+      "char_end": 855,
+      "token_estimate": 214,
+      "block_count": 3,
+      "overlap_prev_chars": null,
+      "hash": "5c99466e83a0294a",
+      "notes": null,
+      "blocks": [
+        {
+          "block_index": 0,
+          "block_id": "doc3_p0_b0",
+          "text": "Message-ID: <2325098.1075857796259.JavaMail.evans@thyme>\r\nDate: Thu, 4 May 2000 11:10:00 -0700 (PDT)\r\nFrom: kwright@momentumcars.com\r\nTo: john.zufferli@enron.com\r\nSubject: momentum motor cars\r\nMime-Version: 1.0\r\nContent-Type: text/plain; charset=us-ascii\r\nContent-Transfer-Encoding: 7bit\r\nX-From: \"Kenneth Wright\" <kwright@momentumcars.com>\r\nX-To: <john.zufferli@enron.com>\r\nX-cc: \r\nX-bcc: \r\nX-Folder: \\John_Zufferlie_Dec2000\\Notes Folders\\Discussion threads\r\nX-Origin: Zufferlie-J\r\nX-FileName: jzuffer.nsf\r\n\r\nJohn,\nThank you for your interest in one of my  cars. I look forward to meeting\nyou on Saturday afternoon. Please feel free to contact me if you have any\nfurther questions. (713)875-7065 direct\nSincerely,",
+          "kind": "paragraph",
+          "char_start": 0,
+          "char_end": 714,
+          "byte_start": null,
+          "byte_end": null,
+          "bbox": null,
+          "font": null,
+          "token_estimate": 178,
+          "lines": 21,
+          "kind_hint": null
+        },
+        {
+          "block_index": 1,
+          "block_id": "doc3_p0_b1",
+          "text": "Kenneth Wright\nPre-Owned Internet Sales Manager\n(713) 596-3891",
+          "kind": "paragraph",
+          "char_start": 716,
+          "char_end": 778,
+          "byte_start": null,
+          "byte_end": null,
+          "bbox": null,
+          "font": null,
+          "token_estimate": 16,
+          "lines": 3,
+          "kind_hint": null
+        },
+        {
+          "block_index": 2,
+          "block_id": "doc3_p0_b2",
+          "text": "- PV4250.F.jpg\n - PV4250.LREAR.jpg\n - PV4250.SEATS.jpg\n - PV4250.DIALS.jpg",
+          "kind": "list_item",
+          "char_start": 781,
+          "char_end": 855,
+          "byte_start": null,
+          "byte_end": null,
+          "bbox": null,
+          "font": null,
+          "token_estimate": 18,
+          "lines": 4,
+          "kind_hint": null
+        }
+      ]
+    }
+  ],
+  "extraction_metadata": {
+    "original_size_bytes": 855,
+    "char_count": 855,
+    "encoding": "utf-8",
+    "normalized": "NFKC"
+  }
+}

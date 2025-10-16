@@ -4,10 +4,10 @@ version = "0.1.0"
 description = "AI Legal Document Analysis Backend"
 authors = ["Jonathan Hop <yithril@gmail.com>"]
 readme = "README.md"
-packages = [{include = "core"}, {include = "infrastructure"}, {include = "features"}]
+packages = [{include = "core"}, {include = "infrastructure"}, {include = "features"}, {include = "services"}, {include = "controllers"}, {include = "dtos"}, {include = "prompts"}, {include = "repositories"}]
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.12,<3.13"
 
 # Core Framework
 fastapi = "^0.115.0"
@@ -40,6 +40,7 @@ python-magic-bin = "^0.4.14"  # File type detection (Windows-compatible)
 # Utilities
 python-dotenv = "^1.0.0"
 aiofiles = "^24.0.0"
+pytesseract = "^0.3.13"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.0"

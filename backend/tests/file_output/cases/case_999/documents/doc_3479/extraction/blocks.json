@@ -1,0 +1,77 @@
+{
+  "model": "page_blocks.v1",
+  "version": "extraction.v1",
+  "document_id": 3479,
+  "file_type": "txt",
+  "page_count": 1,
+  "total_blocks": 3,
+  "pages": [
+    {
+      "page_index": 0,
+      "width": null,
+      "height": null,
+      "byte_start": null,
+      "byte_end": null,
+      "char_start": 0,
+      "char_end": 1507,
+      "token_estimate": 377,
+      "block_count": 3,
+      "overlap_prev_chars": null,
+      "hash": "e0d69c1f4e8f1ab2",
+      "notes": null,
+      "blocks": [
+        {
+          "block_index": 0,
+          "block_id": "doc3479_p0_b0",
+          "text": "Message-ID: <649261.1075842026101.JavaMail.evans@thyme>\r\nDate: Wed, 9 Jan 2002 07:04:48 -0800 (PST)\r\nFrom: carol.moline@powerpool.ab.ca\r\nTo: rclark@suncor.com\r\nSubject: Power Pool\r\nCc: john.zufferli@enron.com\r\nMime-Version: 1.0\r\nContent-Type: text/plain; charset=us-ascii\r\nContent-Transfer-Encoding: 7bit\r\nBcc: john.zufferli@enron.com\r\nX-From: \"carol.moline@powerpool.ab.ca\" <carol.moline@powerpool.ab.ca>@ENRON\r\nX-To: rclark@suncor.com\r\nX-cc: Zufferli, John </O=ENRON/OU=NA/CN=RECIPIENTS/CN=JZUFFER>\r\nX-bcc: \r\nX-Folder: \\ExMerge - Zufferli, John\\Inbox\r\nX-Origin: ZUFFERLI-J\r\nX-FileName: john zufferli 6-26-02.PST\r\n\r\nThis email is acknowledgement from the Power Pool of Alberta of the change\nin direct sales/forward contract registration for contracts that are\ncurrently registered with the Power Pool between Suncor Energy and Enron\nCanada Power Corporation for trading after December 29 HE 1 2001.  On\nJanuary 4 the Power Pool received your acknowledgement of Enron's change in\nthe source asset for the direct sales/forward contract registrations for\ncontract # 1421 to modify the source from the Sundance 3 unit (SD3) to\nEnron's unmetered source asset (ECP-).  The modified registration terms will\nbe effective December 29 HE 1 2001 and will apply until the expiry date of\nthe contract registration for net settlement purposes.",
+          "kind": "paragraph",
+          "char_start": 0,
+          "char_end": 1330,
+          "byte_start": null,
+          "byte_end": null,
+          "bbox": null,
+          "font": null,
+          "token_estimate": 332,
+          "lines": 28,
+          "kind_hint": null
+        },
+        {
+          "block_index": 1,
+          "block_id": "doc3479_p0_b1",
+          "text": "If you have any questions relating to this matter, please give me a call.",
+          "kind": "paragraph",
+          "char_start": 1332,
+          "char_end": 1405,
+          "byte_start": null,
+          "byte_end": null,
+          "bbox": null,
+          "font": null,
+          "token_estimate": 18,
+          "lines": 1,
+          "kind_hint": null
+        },
+        {
+          "block_index": 2,
+          "block_id": "doc3479_p0_b2",
+          "text": "Carol Moline\nFinancial Controller\nPower Pool of Alberta\n(403) 233-4686\ncarol.moline@powerpool.ab.ca",
+          "kind": "paragraph",
+          "char_start": 1407,
+          "char_end": 1506,
+          "byte_start": null,
+          "byte_end": null,
+          "bbox": null,
+          "font": null,
+          "token_estimate": 25,
+          "lines": 5,
+          "kind_hint": null
+        }
+      ]
+    }
+  ],
+  "extraction_metadata": {
+    "original_size_bytes": 1507,
+    "char_count": 1507,
+    "encoding": "utf-8",
+    "normalized": "NFKC"
+  }
+}

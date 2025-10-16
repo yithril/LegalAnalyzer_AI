@@ -1,6 +1,6 @@
 """Base class for text extraction strategies."""
 from abc import ABC, abstractmethod
-from services.models import DocumentType
+from services.models import DocumentType, ExtractedDocument
 
 
 class BaseTextExtractor(ABC):
@@ -20,16 +20,17 @@ class BaseTextExtractor(ABC):
         pass
     
     @abstractmethod
-    def extract(self, file_data: bytes, filename: str) -> str:
+    async def extract(self, file_data: bytes, filename: str, document_id: int) -> ExtractedDocument:
         """
-        Extract text from document.
+        Extract text and structure from document.
         
         Args:
             file_data: Raw file bytes
             filename: Original filename (for extension checking)
+            document_id: Database ID of the document
             
         Returns:
-            Extracted text content
+            ExtractedDocument with pages, blocks, and text
         """
         pass
 

@@ -1,11 +1,9 @@
-"""Service-level models and enums."""
-from enum import Enum
+"""Service-level models and enums.
 
+DEPRECATED: This module is kept for backward compatibility.
+Import from services.models instead.
+"""
+from services.models import DocumentType
 
-class DocumentType(str, Enum):
-    """Document classification types for processing strategy."""
-    TEXT_EXTRACTABLE = "text_extractable"
-    OCR_NEEDED = "ocr_needed"
-    MULTIMODAL = "multimodal"
-    UNKNOWN = "unknown"
+__all__ = ["DocumentType"]
 

@@ -1,0 +1,78 @@
+{
+  "model": "page_blocks.v1",
+  "version": "extraction.v1",
+  "document_id": 2,
+  "file_type": "txt",
+  "page_count": 2,
+  "total_blocks": 2,
+  "pages": [
+    {
+      "page_index": 0,
+      "width": null,
+      "height": null,
+      "byte_start": null,
+      "byte_end": null,
+      "char_start": 0,
+      "char_end": 4915,
+      "token_estimate": 1229,
+      "block_count": 1,
+      "overlap_prev_chars": null,
+      "hash": "70f86cb7dc7b80dd",
+      "notes": null,
+      "blocks": [
+        {
+          "block_index": 0,
+          "block_id": "doc2_p0_b0",
+          "text": "Message-ID: <25850694.1075855135581.JavaMail.evans@thyme>\r\nDate: Wed, 19 Dec 2001 01:10:15 -0800 (PST)\r\nFrom: shop.microsoft.com@sweepsclub.com\r\nTo: don.baughman@enron.com\r\nSubject: Your Holiday Forecast: savings, prizes!\r\nMime-Version: 1.0\r\nContent-Type: text/plain; charset=us-ascii\r\nContent-Transfer-Encoding: 7bit\r\nX-From: \"Shop.Microsoft.com\" <Shop.Microsoft.com@sweepsclub.com>@ENRON\r\nX-To: Baughman Jr., Don </O=ENRON/OU=NA/CN=RECIPIENTS/CN=DBAUGHM>\r\nX-cc: \r\nX-bcc: \r\nX-Folder: \\Edward_Baughman_Jan2002\\Baughman Jr., Don\\Inbox\r\nX-Origin: Baughman-E\r\nX-FileName: dbaughm (Non-Privileged).pst\r\n\r\n<html>\r\n<head>\r\n<title>Holiday Email</title>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\r\n</head>\r\n<body bgcolor=\"#FFFFFF\" link=\"#000066\" vlink=\"#66CC66\" topmargin=\"0\" marginheight=\"0\">\r\n<table width=\"621\" border=\"0\">\r\n<tr>\r\n<td>\r\n<table width=\"512\" border=\"0\" align=\"center\">\r\n<tr>\r\n<td><font size=\"1\" face=\"Verdana, Arial, Helvetica, sans-serif\" color=\"black\">\r\neNexiDirect is sending you this special message from shop.microsoft.com\r\nas part of the terms of service/membership agreed to when you signed\r\nup with Sweepsclub. Please follow the instructions at the end of this\r\nmessage if you would prefer to not receive these special offers in\r\nthe future. </font></td>\r\n</tr>\r\n</table>\r\n</td>\r\n</tr>\r\n</table>\r\n<table width=\"476\" border=\"0\" cellpadding=\"0\" cellspacing=\"4\">\r\n<tr align=\"left\" valign=\"top\">\r\n<td height=\"147\" colspan=\"2\">\r\n<div align=\"right\">\r\n<p align=\"left\"><img src=\"http://64.58.151.7/img/shopMScom/decemail_1a.gif\" width=\"335\" height=\"158\">\r\n<img src=\"http://64.58.151.7/img/shopMScom/decemail_1b.gif\" width=\"122\" height=\"158\"> </p>\r\n</div>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td colspan=\"2\" height=\"88\">\r\n<p align=\"left\"><font face=\"Arial, Helvetica, sans-serif\"><font color=\"#000066\"><b>Don't\r\nmiss out on saving $10 on every order of $100 or more, or saving $5 on\r\norders under $100!</b></font><b><font color=\"#000066\"></font></b></font></p>\r\n<p><font face=\"Arial, Helvetica, sans-serif\"> <font color=\"#3399CC\"><b><font color=\"#000066\">And\r\ndon't let time run out on your chance to win great prizes, like a Sony\r\nMavica</font><font face=\"Arial, Helvetica, sans-serif\"><font color=\"#3399CC\"><b><font face=\"Arial, Helvetica, sans-serif\"><font color=\"#3399CC\"><b><font color=\"#000066\"><font size=\"1\"><sup>&reg;</sup></font></font></b></font></font></b></font></font><font color=\"#000066\">\r\nDigital Camera!</font></b></font></font></p>\r\n<p><font face=\"Arial, Helvetica, sans-serif\">For easy holiday shopping visit\r\n<a href=\"http://www.sweepsclub.com/email/redir.cfm?e=148505175&m=2555719\">shop.microsoft.com</a>\r\nand save on great products like: </font></p>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td align=\"left\" height=\"303\" valign=\"top\" width=\"201\">\r\n<p><br>\r\n</p>\r\n<p align=\"right\"><a href=\"http://www.sweepsclub.com/email/redir.cfm?e=148505175&m=2555719\"><img src=\"http://64.58.151.7/img/shopMScom/new-email-header.jpg\" width=\"201\" height=\"218\" border=\"0\"></a><br>\r\n</p>\r\n<p align=\"right\"> <br>\r\n<img src=\"http://64.58.151.7/img/shopMScom/novemail_5.gif\" width=\"74\" height=\"61\"></p>\r\n<p align=\"right\">&nbsp;</p>\r\n</td>\r\n<td align=\"left\" height=\"303\" valign=\"top\" width=\"275\">\r\n<p><font face=\"Arial, Helvetica, sans-serif\"> </font></p>\r\n<ul>\r\n<li><font face=\"Arial, Helvetica, sans-serif\">Winter Windows &#133; Light\r\nup your home with Windows<font size=\"1\">&reg;</font> XP and Plus! for\r\nWindows XP<br>\r\n</font><font face=\"Arial, Helvetica, sans-serif\"><br>\r\n</font></li>\r\n<li><font face=\"Arial, Helvetica, sans-serif\">Toys & Games &#133; Unwrap\r\nAge of Empires<font size=\"1\">&reg;</font> Gold Edition and Zoo Tycoon,\r\njust for starters<br>\r\n<br>\r\n</font></li>\r\n<li><font face=\"Arial, Helvetica, sans-serif\">Office Party &#133; Go kinda\r\ncrazy with Office XP Professional, FrontPage<font size=\"1\">&reg;</font>\r\n2002 and other leading applications<br>\r\n<br>\r\n</font></li>\r\n<li><font face=\"Arial, Helvetica, sans-serif\">Home for the Holidays &#133;\r\nWelcome home Works Suite 2002 and Money 2002 Deluxe, for example <br>\r\n<br>\r\n</font></li>\r\n<li><font face=\"Arial, Helvetica, sans-serif\">Holiday Hardware &#133;\r\nGear up with Wireless IntelliMouse<font size=\"1\">&reg;</font> Explorer,\r\nInternet Keyboard Pro, and more</font></li>\r\n</ul>\r\n</td>\r\n</tr>\r\n<tr valign=\"top\">\r\n<td colspan=\"2\" height=\"184\">\r\n<p><font face=\"Arial, Helvetica, sans-serif\"><br>\r\nEnter to win* when you visit <a href=\"http://www.sweepsclub.com/email/redir.cfm?e=148505175&m=2555719\">shop.microsoft.com</a>.\r\nEvery week a cool prize like a Sony Mavica<font size=\"1\">&reg;</font>\r\nDigital Camera or a Sony Hi8 Handycam<font size=\"1\">&reg;</font> or even\r\na new LaserJet 1220 Multifunction Print/Copy/Scan station will be given\r\naway. It's easy to enter for a chance to win, and there's no purchase\r\nnecessary. </font></p>\r\n<p><br>\r\n<font face=\"Arial, Helvetica, sans-serif\"><b><font color=\"#000066\">Hurry!\r\nTime is short.",
+          "kind": "paragraph",
+          "char_start": 0,
+          "char_end": 4914,
+          "byte_start": null,
+          "byte_end": null,
+          "bbox": null,
+          "font": null,
+          "token_estimate": 1228,
+          "lines": 111,
+          "kind_hint": null
+        }
+      ]
+    },
+    {
+      "page_index": 1,
+      "width": null,
+      "height": null,
+      "byte_start": null,
+      "byte_end": null,
+      "char_start": 4415,
+      "char_end": 7213,
+      "token_estimate": 700,
+      "block_count": 1,
+      "overlap_prev_chars": 500,
+      "hash": "cebf6397457a9b16",
+      "notes": null,
+      "blocks": [
+        {
+          "block_index": 0,
+          "block_id": "doc2_p1_b0",
+          "text": "tp://www.sweepsclub.com/email/redir.cfm?e=148505175&m=2555719\">shop.microsoft.com</a>.\r\nEvery week a cool prize like a Sony Mavica<font size=\"1\">&reg;</font>\r\nDigital Camera or a Sony Hi8 Handycam<font size=\"1\">&reg;</font> or even\r\na new LaserJet 1220 Multifunction Print/Copy/Scan station will be given\r\naway. It's easy to enter for a chance to win, and there's no purchase\r\nnecessary. </font></p>\r\n<p><br>\r\n<font face=\"Arial, Helvetica, sans-serif\"><b><font color=\"#000066\">Hurry!\r\nTime is short. Head to <a href=\"http://www.sweepsclub.com/email/redir.cfm?e=148505175&m=2555719\">shop.microsoft.com</a>\r\ntoday for great selection, valuable savings and cool prizes! </font></b></font></p>\r\n<p align=\"left\"><font size=\"1\" face=\"Arial, Helvetica, sans-serif\">All offers\r\nexpire 1/31/02 and while supplies last, are valid in the 50 United States\r\nand District of Columbia only, and are not combinable with other Microsoft\r\noffers except individual product rebates. Orders cannot be shipped to\r\nPO boxes. $5 and $10 off savings apply to new online product orders from\r\nshop.microsoft.com only. Savings cannot be combined and must be used in\r\none online shopping transaction. <br>\r\n</font></p>\r\n<p align=\"left\"><font face=\"Arial, Helvetica, sans-serif\" size=\"1\">*Open\r\nonly to US residents, 13 years or older. Game ends 1/31/02. For full rules\r\nsee website.</font></p>\r\n<p align=\"left\"><font size=\"1\" face=\"Arial, Helvetica, sans-serif\">&copy;2001\r\nMicrosoft Corporation. All rights reserved. Microsoft, Windows, Age of\r\nEmpires, FrontPage and IntelliMouse are either registered trademarks or\r\ntrademarks of Microsoft Corporation in the U.S. and/or other countries.</font></p>\r\n<p align=\"right\"><a href=\"http://www.sweepsclub.com/email/redir.cfm?e=495325593&m=2555719\"><img src=\"http://64.58.151.7/img/shopMScom/novemail_3.gif\" width=\"72\" height=\"61\" border=\"0\"><img src=\"http://64.58.151.7/img/shopMScom/decemail_5.gif\" width=\"122\" height=\"36\" border=\"0\"></a></p>\r\n</td>\r\n</tr>\r\n</table>\r\n<!-- Client content area above -->\r\n<table width=\"621\" border=\"0\">\r\n<tr>\r\n<td>\r\n<table width=\"512\" border=\"0\" align=\"center\">\r\n<tr>\r\n<td><font size=\"1\" face=\"Verdana, Arial, Helvetica, sans-serif\" color=\"black\">\r\nSweepsclub.com e-mail promotions are sent as a service to its members.  If you feel you have received this e-mail in error and wish to unsubscribe from Sweepsclub's e-mail list, please click the link below:<br><a href=\"http://www.sweepsclub.com/email/redir.cfm?e=861391881&m=2555719&a=ea%3ddon.baughman@enron.com\">http://www.sweepsclub.com/update_profile/removeEmail.cfm</a>.</font></td>\r\n</tr>\r\n</table>\r\n</td>\r\n</tr>\r\n</table>\r\n<!-- eNexiDirect Tracking -->\r\n<img src=\"http://64.58.151.7/o.asp?l=2842&u=xxxuyyy\" height=\"1\" width=\"1\" border=\"0\">\r\n<!-- eNexiDirect Tracking -->\r\n</body>\r\n</html>",
+          "kind": "paragraph",
+          "char_start": 4415,
+          "char_end": 7209,
+          "byte_start": null,
+          "byte_end": null,
+          "bbox": null,
+          "font": null,
+          "token_estimate": 698,
+          "lines": 47,
+          "kind_hint": null
+        }
+      ]
+    }
+  ],
+  "extraction_metadata": {
+    "original_size_bytes": 7213,
+    "char_count": 7213,
+    "encoding": "utf-8",
+    "normalized": "NFKC"
+  }
+}
