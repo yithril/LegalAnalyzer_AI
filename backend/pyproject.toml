@@ -28,6 +28,9 @@ aioboto3 = "^13.0.0"
 # Vector Database (Pinecone)
 pinecone-client = "^5.0.0"
 
+# Search (Elasticsearch)
+elasticsearch = "^8.11.0"
+
 # AI/ML (Local Models)
 ollama = "^0.3.0"
 sentence-transformers = "^3.0.0"
@@ -41,6 +44,9 @@ python-magic-bin = "^0.4.14"  # File type detection (Windows-compatible)
 python-dotenv = "^1.0.0"
 aiofiles = "^24.0.0"
 pytesseract = "^0.3.13"
+torch = "^2.9.0"
+transformers = "^4.57.1"
+accelerate = "^1.10.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.0"

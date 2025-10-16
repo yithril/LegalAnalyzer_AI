@@ -29,10 +29,14 @@ class Settings(BaseSettings):
     pinecone_index_name: str = "law-analysis"  # Default index name
     pinecone_region: str = "us-east-1"  # For ServerlessSpec when creating new indexes
     
+    # Elasticsearch (Full-Text Search)
+    elasticsearch_url: str = "http://localhost:9200"
+    elasticsearch_index_summaries: str = "document_summaries"
+    
     # AI Models (Local - Ollama)
     ollama_base_url: str = "http://localhost:11434"  # Ollama API endpoint
-    ollama_model: str = "llama3.1:70b"  # LLM for summarization/analysis
-    embedding_model: str = "all-MiniLM-L6-v2"  # Sentence transformer for embeddings (for later)
+    ollama_model: str = "llama3.1:8b"  # LLM for summarization/analysis
+    embedding_model: str = "nlpaueb/legal-bert-base-uncased"  # Legal-domain embeddings for chunking
 
 
 # Singleton instance

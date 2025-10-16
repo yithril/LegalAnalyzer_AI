@@ -52,17 +52,23 @@ async def test_extract_pdf():
     Change the filename below to test different PDFs from the samples folder.
     """
     # CHANGE THIS to test different PDFs
-    test_filename = "EXH005-02498.PDF"
-    # Other options: enron1992.pdf, enron1993.pdf, enron1994.pdf, etc.
+    test_filename = "EXH005-02542.PDF"
+    # Other options: enron1992.pdf, enron1993.pdf, enron1994.pdf, EXH005-02542.PDF, etc.
     
-    sample_dir = Path(__file__).parent.parent / "helpers" / "sample_files" / "pdf"
+    # Check both pdf and ocr folders
+    sample_dir_ocr = Path(__file__).parent.parent / "helpers" / "sample_files" / "ocr"
+    sample_dir_pdf = Path(__file__).parent.parent / "helpers" / "sample_files" / "pdf"
     output_dir = Path(__file__).parent.parent / "file_output"
     
-    file_path = sample_dir / test_filename
+    # Try OCR folder first, then PDF folder
+    file_path = sample_dir_ocr / test_filename
+    if not file_path.exists():
+        file_path = sample_dir_pdf / test_filename
     
     if not file_path.exists():
-        print(f"File not found: {file_path}")
-        print(f"Available PDFs: {list(sample_dir.glob('*.pdf'))}")
+        print(f"File not found: {test_filename}")
+        print(f"Available OCR PDFs: {list(sample_dir_ocr.glob('*.PDF'))}")
+        print(f"Available PDF files: {list(sample_dir_pdf.glob('*.pdf'))}")
         pytest.skip(f"Test file not found: {test_filename}")
     
     print(f"\n{'='*70}")

@@ -29,10 +29,17 @@ class Document(BaseModel):
     status = fields.CharEnumField(DocumentStatus, default=DocumentStatus.UPLOADED)
     processing_error = fields.TextField(null=True)  # If processing fails, error details here
     
+    # Classification results
+    classification = fields.CharField(max_length=50, null=True)  # e.g., "email", "contract", "report"
+    
     # Content analysis results (from content_analysis pipeline)
     content_category = fields.CharField(max_length=50, null=True)  # ContentCategory enum value
     filter_confidence = fields.FloatField(null=True)  # 0.0 to 1.0
     filter_reasoning = fields.TextField(null=True)  # Why filtered in/out
+    
+    # Summarization tracking (summary stored in Elasticsearch)
+    has_summary = fields.BooleanField(default=False)  # Quick check if summarized
+    summarized_at = fields.DatetimeField(null=True)  # When summarization completed
     
     class Meta:
         table = "documents"

@@ -41,13 +41,12 @@ class DocumentStatus(str, Enum):
     """
     UPLOADED = "uploaded"  # File successfully uploaded to MinIO
     DETECTING_TYPE = "detecting_type"  # Detecting file type from content (for files without extension)
+    EXTRACTING_BLOCKS = "extracting_blocks"  # Extracting layout blocks from document
+    CLASSIFYING = "classifying"  # Classifying document type (email, contract, etc.)
     ANALYZING_CONTENT = "analyzing_content"  # Running content analysis (spam detection, quality check)
     FILTERED_OUT = "filtered_out"  # Document filtered out (spam, low quality, etc.) - will not be processed further
-    VALIDATING = "validating"  # Running security/format checks
-    EXTRACTING_BLOCKS = "extracting_blocks"  # Extracting layout blocks from document
-    EXTRACTING_METADATA = "extracting_metadata"  # LLM extracting court metadata
     CHUNKING = "chunking"  # Creating semantic chunks
-    EMBEDDING = "embedding"  # Generating vector embeddings
+    SUMMARIZING = "summarizing"  # Generating summaries
     COMPLETED = "completed"  # Fully processed and searchable
     FAILED = "failed"  # Processing failed
 

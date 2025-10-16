@@ -1,15 +1,14 @@
-"""PDF extraction using PyMuPDF with Tesseract OCR fallback."""
+"""PDF extraction using PyMuPDF with native OCR support."""
 import hashlib
 import os
 from pathlib import Path
 import fitz  # PyMuPDF
 import pytesseract
-from PIL import Image
 from services.models import DocumentType, ExtractedDocument, Page, TextBlock, FontInfo, ImageMetadata
 from services.text_extraction.base_extractor import BaseTextExtractor
 
 
-# Configure Tesseract path for Windows
+# Configure Tesseract path for Windows so PyMuPDF can find it
 if os.name == 'nt':  # Windows
     possible_paths = [
         r'C:\Program Files\Tesseract-OCR\tesseract.exe',
@@ -18,6 +17,8 @@ if os.name == 'nt':  # Windows
     for path in possible_paths:
         if Path(path).exists():
             pytesseract.pytesseract.tesseract_cmd = path
+            # Also set environment variable for PyMuPDF
+            os.environ['TESSDATA_PREFIX'] = str(Path(path).parent / 'tessdata')
             break
 
 
@@ -113,7 +114,7 @@ class PDFExtractor(BaseTextExtractor):
             page_kind = "normal"
         else:
             # PyMuPDF found nothing - OCR it!
-            blocks = await self._ocr_page_with_tesseract(page, page_num, document_id)
+            blocks = await self._ocr_page_with_pymupdf(page, page_num, document_id)
             needs_ocr = True
             has_text_layer = False
             page_kind = "scan_candidate"
@@ -142,8 +143,8 @@ class PDFExtractor(BaseTextExtractor):
             blocks=blocks
         )
     
-    async def _ocr_page_with_tesseract(self, page: fitz.Page, page_num: int, document_id: int) -> list[TextBlock]:
-        """Run Tesseract OCR on a page that has no text layer.
+    async def _ocr_page_with_pymupdf(self, page: fitz.Page, page_num: int, document_id: int) -> list[TextBlock]:
+        """Run PyMuPDF's native OCR on a page that has no text layer.
         
         Args:
             page: PyMuPDF page object
@@ -153,24 +154,91 @@ class PDFExtractor(BaseTextExtractor):
         Returns:
             List of TextBlocks with OCR'd text
         """
-        # Render page as image at high DPI for better OCR
-        pix = page.get_pixmap(dpi=300)  # 300 DPI is standard for OCR
+        print(f"  [OCR] Page {page_num}: Running PyMuPDF OCR...")
         
-        # Convert to PIL Image
-        img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-        
-        # Debug: Print image size
-        print(f"  [OCR] Page {page_num}: Rendering at {pix.width}x{pix.height}px for OCR...")
-        
-        # Run Tesseract OCR with automatic page segmentation
         try:
-            data = pytesseract.image_to_data(
-                img, 
-                output_type=pytesseract.Output.DICT,
-                config='--psm 3'  # Fully automatic page segmentation
-            )
+            # Use PyMuPDF's native OCR - returns a TextPage object
+            # dpi=300 for good quality, language="eng" for English
+            textpage = page.get_textpage_ocr(dpi=300, language="eng")
+            
+            # Extract structured blocks just like we do for normal PDFs
+            text_dict = textpage.extractDICT()
+            
+            # Use the same extraction logic as normal PDF text
+            blocks = []
+            block_index = 0
+            
+            for block in text_dict.get("blocks", []):
+                # Skip image blocks
+                if block.get("type") != 0:  # 0 = text block
+                    continue
+                
+                # Extract text from lines
+                lines = []
+                for line in block.get("lines", []):
+                    line_text = ""
+                    for span in line.get("spans", []):
+                        line_text += span.get("text", "")
+                    if line_text.strip():
+                        lines.append(line_text)
+                
+                if not lines:
+                    continue
+                
+                block_text = "\n".join(lines).strip()
+                if not block_text:
+                    continue
+                
+                # Get bbox
+                bbox = block.get("bbox", [0, 0, 0, 0])
+                
+                # Get font info from first span (if available)
+                font_info = None
+                if block.get("lines") and block["lines"][0].get("spans"):
+                    first_span = block["lines"][0]["spans"][0]
+                    font_info = FontInfo(
+                        size=first_span.get("size"),
+                        bold="Bold" in first_span.get("font", ""),
+                        italic="Italic" in first_span.get("font", ""),
+                        font_name=first_span.get("font")
+                    )
+                
+                # Detect block kind
+                kind = self._detect_block_kind(block_text, bbox, page.rect)
+                
+                # Create block
+                text_block = TextBlock(
+                    block_index=block_index,
+                    block_id=f"doc{document_id}_p{page_num}_b{block_index}",
+                    text=block_text,
+                    kind=kind,
+                    bbox=list(bbox),
+                    font=font_info,
+                    token_estimate=self._estimate_tokens(block_text),
+                    lines=len(lines)
+                )
+                
+                blocks.append(text_block)
+                block_index += 1
+            
+            # If OCR found nothing, add placeholder
+            if not blocks:
+                blocks.append(TextBlock(
+                    block_index=0,
+                    block_id=f"doc{document_id}_p{page_num}_b0",
+                    text="[OCR found no text]",
+                    kind="ocr_no_text",
+                    bbox=[0, 0, page.rect.width, page.rect.height],
+                    token_estimate=0,
+                    lines=1
+                ))
+            
+            print(f"  [OCR] Page {page_num}: Extracted {len(blocks)} blocks")
+            return blocks
+            
         except Exception as e:
-            # If Tesseract fails, return placeholder
+            # If OCR fails, return error block
+            print(f"  [OCR] Page {page_num}: OCR failed - {str(e)}")
             return [TextBlock(
                 block_index=0,
                 block_id=f"doc{document_id}_p{page_num}_b0",
@@ -180,67 +248,6 @@ class PDFExtractor(BaseTextExtractor):
                 token_estimate=0,
                 lines=1
             )]
-        
-        # Use Tesseract's native paragraph grouping (level=3)
-        # Filter to only paragraph-level entries (Tesseract already grouped words!)
-        blocks = []
-        block_index = 0
-        scale_x = page.rect.width / pix.width
-        scale_y = page.rect.height / pix.height
-        
-        # Debug: count entries by level
-        total_entries = len(data['text'])
-        level_counts = {}
-        for lvl in data['level']:
-            level_counts[lvl] = level_counts.get(lvl, 0) + 1
-        print(f"  [OCR] Tesseract returned {total_entries} entries, levels: {level_counts}")
-        
-        for i in range(len(data['text'])):
-            # Only process paragraph-level entries (level=3)
-            if data['level'][i] != 3:
-                continue
-            
-            text = data['text'][i].strip()
-            conf = int(data['conf'][i]) if data['conf'][i] != '-1' else 0
-            
-            # Skip empty or very low confidence paragraphs
-            if not text or conf < 30:
-                continue
-            
-            # Scale bbox from pixels to PDF points
-            bbox = [
-                data['left'][i] * scale_x,
-                data['top'][i] * scale_y,
-                (data['left'][i] + data['width'][i]) * scale_x,
-                (data['top'][i] + data['height'][i]) * scale_y
-            ]
-            
-            block = TextBlock(
-                block_index=block_index,
-                block_id=f"doc{document_id}_p{page_num}_b{block_index}",
-                text=text,
-                kind="paragraph",
-                bbox=bbox,
-                token_estimate=self._estimate_tokens(text),
-                lines=text.count('\n') + 1
-            )
-            
-            blocks.append(block)
-            block_index += 1
-        
-        # If OCR found nothing, add placeholder
-        if not blocks:
-            blocks.append(TextBlock(
-                block_index=0,
-                block_id=f"doc{document_id}_p{page_num}_b0",
-                text="[OCR found no text]",
-                kind="ocr_no_text",
-                bbox=[0, 0, page.rect.width, page.rect.height],
-                token_estimate=0,
-                lines=1
-            ))
-        
-        return blocks
     
     def _extract_text_blocks(self, page: fitz.Page, page_num: int, document_id: int) -> list[TextBlock]:
         """Extract text blocks with layout information from page."""
