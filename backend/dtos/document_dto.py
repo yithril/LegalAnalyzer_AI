@@ -30,11 +30,24 @@ class DocumentDetailResponse(BaseModel):
     file_type: str
     file_size: int
     status: str
+    classification: Optional[str] = None
+    content_category: Optional[str] = None
+    has_summary: bool = False
     minio_bucket: str
     minio_key: str
     processing_error: Optional[str] = None
     created_at: datetime
     updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class DocumentListResponse(BaseModel):
+    """Response for document list queries."""
+    
+    total: int
+    documents: list[DocumentDetailResponse]
     
     class Config:
         from_attributes = True

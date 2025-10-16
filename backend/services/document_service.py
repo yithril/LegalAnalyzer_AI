@@ -1,6 +1,6 @@
 """Document service for handling document operations."""
 import os
-from typing import Tuple
+from typing import List, Optional
 from fastapi import UploadFile, HTTPException
 from core.models.document import Document
 from core.constants import (
@@ -145,4 +145,55 @@ class DocumentService:
         except ValueError:
             # Unknown extension -> needs preprocessing to detect
             return SupportedFileType.UNKNOWN
+    
+    async def list_documents(
+        self,
+        case_id: int,
+        status: Optional[str] = None,
+        limit: int = 100,
+        offset: int = 0
+    ) -> tuple[List[Document], int]:
+        """List documents for a case with optional filtering.
+        
+        Args:
+            case_id: Case ID to filter by
+            status: Optional status filter (e.g., "processing", "completed", "failed")
+            limit: Maximum number of documents to return
+            offset: Number of documents to skip (for pagination)
+            
+        Returns:
+            Tuple of (documents list, total count)
+        """
+        # Build query
+        query = Document.filter(case_id=case_id)
+        
+        # Apply status filter if provided
+        if status:
+            if status == "processing":
+                # Show documents currently being processed
+                query = query.filter(
+                    status__in=[
+                        DocumentStatus.EXTRACTING_BLOCKS,
+                        DocumentStatus.CLASSIFYING,
+                        DocumentStatus.ANALYZING_CONTENT,
+                        DocumentStatus.CHUNKING,
+                        DocumentStatus.SUMMARIZING
+                    ]
+                )
+            elif status == "incomplete":
+                # Show everything not completed or filtered
+                query = query.exclude(
+                    status__in=[DocumentStatus.COMPLETED, DocumentStatus.FILTERED_OUT]
+                )
+            else:
+                # Direct status match
+                query = query.filter(status=status)
+        
+        # Get total count
+        total = await query.count()
+        
+        # Get documents with pagination
+        documents = await query.order_by('-created_at').offset(offset).limit(limit).all()
+        
+        return documents, total
 

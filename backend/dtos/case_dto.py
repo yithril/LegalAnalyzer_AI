@@ -11,6 +11,13 @@ class CaseCreateRequest(BaseModel):
     description: Optional[str] = None
 
 
+class CaseUpdateRequest(BaseModel):
+    """Request to update a case."""
+    
+    name: Optional[str] = None
+    description: Optional[str] = None
+
+
 class CaseResponse(BaseModel):
     """Response for case operations."""
     

@@ -1,7 +1,7 @@
 """Case service for handling case operations."""
 from fastapi import HTTPException
 from core.models.case import Case
-from dtos.case_dto import CaseCreateRequest
+from dtos.case_dto import CaseCreateRequest, CaseUpdateRequest
 
 
 class CaseService:
@@ -49,4 +49,48 @@ class CaseService:
         """
         cases = await Case.all()
         return cases
+    
+    async def update_case(self, case_id: int, request: CaseUpdateRequest) -> Case:
+        """Update a case.
+        
+        Args:
+            case_id: The ID of the case to update
+            request: Update request with fields to change
+            
+        Returns:
+            Case: The updated case record
+            
+        Raises:
+            HTTPException: If case not found
+        """
+        case = await Case.get_or_none(id=case_id)
+        
+        if not case:
+            raise HTTPException(status_code=404, detail=f"Case with ID {case_id} not found")
+        
+        # Update only provided fields
+        if request.name is not None:
+            case.name = request.name
+        
+        if request.description is not None:
+            case.description = request.description
+        
+        await case.save()
+        return case
+    
+    async def delete_case(self, case_id: int) -> None:
+        """Delete a case.
+        
+        Args:
+            case_id: The ID of the case to delete
+            
+        Raises:
+            HTTPException: If case not found
+        """
+        case = await Case.get_or_none(id=case_id)
+        
+        if not case:
+            raise HTTPException(status_code=404, detail=f"Case with ID {case_id} not found")
+        
+        await case.delete()
 
