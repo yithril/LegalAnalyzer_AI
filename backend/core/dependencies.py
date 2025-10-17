@@ -1,11 +1,11 @@
 """FastAPI dependencies for authentication and authorization."""
 from typing import Annotated, Optional
 from fastapi import Depends, HTTPException, status
-from core.auth import JWT
+from core.auth import JWT, JWTPayload
 
 
 # Required authentication - raises 401 if not authenticated
-async def require_auth(jwt: Annotated[dict, Depends(JWT)]) -> dict:
+async def require_auth(jwt: JWTPayload) -> dict:
     """
     Require authentication for an endpoint.
     
@@ -26,7 +26,7 @@ async def require_auth(jwt: Annotated[dict, Depends(JWT)]) -> dict:
 
 
 # Optional authentication - returns None if not authenticated
-async def optional_auth(jwt: Annotated[dict, Depends(JWT)]) -> Optional[dict]:
+async def optional_auth(jwt: JWTPayload) -> Optional[dict]:
     """
     Optional authentication for an endpoint.
     
@@ -41,34 +41,3 @@ async def optional_auth(jwt: Annotated[dict, Depends(JWT)]) -> Optional[dict]:
             return {"message": "Hello guest"}
     """
     return jwt if jwt else None
-
-
-def get_user_id(jwt: Annotated[dict, Depends(require_auth)]) -> str:
-    """
-    Extract user ID from JWT.
-    
-    Usage:
-        @app.get("/my-profile")
-        async def profile(user_id: Annotated[str, Depends(get_user_id)]):
-            return {"user_id": user_id}
-    """
-    user_id = jwt.get("sub") or jwt.get("id")
-    if not user_id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token: missing user ID"
-        )
-    return user_id
-
-
-def get_user_email(jwt: Annotated[dict, Depends(require_auth)]) -> Optional[str]:
-    """
-    Extract user email from JWT.
-    
-    Usage:
-        @app.get("/my-email")
-        async def email(user_email: Annotated[str, Depends(get_user_email)]):
-            return {"email": user_email}
-    """
-    return jwt.get("email")
-

@@ -1,6 +1,6 @@
 "use client"
 
-import { useSession, signOut, getCsrfToken } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
@@ -25,14 +25,11 @@ export default function DashboardPage() {
 
   const testProtectedEndpoint = async () => {
     try {
-      const csrfToken = await getCsrfToken()
-      
       const res = await fetch("http://localhost:8000/cases", {
         method: "GET",
-        credentials: "include", // Important: send cookies
+        credentials: "include", // Important: send cookies with session token
         headers: {
           "Content-Type": "application/json",
-          ...(csrfToken && { "X-XSRF-Token": csrfToken }),
         },
       })
 
@@ -122,4 +119,3 @@ export default function DashboardPage() {
     </div>
   )
 }
-

@@ -37,6 +37,12 @@ class Document(BaseModel):
     filter_confidence = fields.FloatField(null=True)  # 0.0 to 1.0
     filter_reasoning = fields.TextField(null=True)  # Why filtered in/out
     
+    # Relevance scoring (how important to the case - 0-100)
+    relevance_score = fields.IntField(null=True)  # 0-100 scale
+    relevance_reasoning = fields.TextField(null=True)  # Why this score?
+    relevance_manual_override = fields.BooleanField(default=False)  # Human modified?
+    relevance_scored_at = fields.DatetimeField(null=True)  # When scored
+    
     # Summarization tracking (summary stored in Elasticsearch)
     has_summary = fields.BooleanField(default=False)  # Quick check if summarized
     summarized_at = fields.DatetimeField(null=True)  # When summarization completed

@@ -2,8 +2,6 @@
  * API client for backend communication
  */
 
-import { getSession } from 'next-auth/react'
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
 class ApiError extends Error {
@@ -137,4 +135,3 @@ export const api = {
 }
 
 export { ApiError }
-

@@ -75,6 +75,8 @@ class StorageClient:
     ) -> str:
         """Upload a file to MinIO.
         
+        Auto-creates bucket if it doesn't exist.
+        
         Args:
             bucket_name: Name of the bucket.
             object_name: Name/path of the object in the bucket.
@@ -89,6 +91,9 @@ class StorageClient:
         
         try:
             from io import BytesIO
+            
+            # Auto-create bucket if it doesn't exist
+            await self.create_bucket(bucket_name)
             
             self.client.put_object(
                 bucket_name,

@@ -169,11 +169,11 @@ export const theme = {
   // Component-specific styles
   components: {
     button: {
-      primary: 'bg-primary-600 hover:bg-primary-700 text-white shadow-lg shadow-primary-500/30',
-      secondary: 'bg-slate-600 hover:bg-slate-700 text-white',
-      outline: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-50',
-      ghost: 'text-slate-700 hover:bg-slate-100',
-      danger: 'bg-error-600 hover:bg-error-700 text-white',
+      primary: 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium shadow-md hover:shadow-lg transition-all',
+      secondary: 'bg-blue-100 hover:bg-blue-200 active:bg-blue-300 text-blue-900 font-medium border border-blue-200 transition-all',
+      outline: 'border-2 border-blue-600 text-blue-700 hover:bg-blue-50 active:bg-blue-100 font-medium transition-all',
+      ghost: 'bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 font-medium transition-all',
+      danger: 'bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-medium shadow-md hover:shadow-lg transition-all',
     },
     
     input: {

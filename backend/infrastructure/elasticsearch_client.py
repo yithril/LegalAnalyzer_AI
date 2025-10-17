@@ -175,6 +175,28 @@ class ElasticsearchClient:
         
         return results
     
+    async def get_document(self, index_name: str, doc_id: str) -> Optional[Dict[str, Any]]:
+        """Get a document by ID.
+        
+        Args:
+            index_name: Index name
+            doc_id: Document ID
+            
+        Returns:
+            Document data or None if not found
+        """
+        if not self.initialized:
+            raise RuntimeError("ElasticsearchClient not initialized. Call init() first.")
+        
+        try:
+            response = await self.client.get(
+                index=index_name,
+                id=doc_id
+            )
+            return response["_source"]
+        except Exception:
+            return None
+    
     async def delete_document(self, index_name: str, doc_id: str) -> None:
         """Delete a document from the index.
         

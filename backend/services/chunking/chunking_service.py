@@ -1,12 +1,77 @@
 """Chunking service for orchestrating document chunking pipeline."""
 import json
+from typing import Any, Dict
 from infrastructure.storage import StorageClient
 from infrastructure.pinecone_client import PineconeClient
 from core.models.document import Document
 from core.constants import DocumentStatus
 from services.models.extraction_models import ExtractedDocument
 from services.chunking.semantic_chunker import SemanticChunker
+
+
 from services.chunking.models import ChunkingResult
+
+
+def filter_none_values(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Remove None values from dictionary.
+    
+    Pinecone metadata doesn't accept None/null values - they must be strings,
+    numbers, booleans, or lists of strings.
+    
+    Args:
+        data: Dictionary that may contain None values
+        
+    Returns:
+        Dictionary with all None values removed
+    """
+    return {k: v for k, v in data.items() if v is not None}
+
+
+def prepare_pinecone_metadata(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Prepare metadata for Pinecone by converting incompatible types.
+    
+    Pinecone metadata constraints:
+    - Values must be: string, number, boolean, or list of strings
+    - Lists of numbers are NOT allowed
+    - None/null values are NOT allowed
+    - No nested dicts/objects
+    
+    Args:
+        data: Raw metadata dictionary
+        
+    Returns:
+        Pinecone-compatible metadata dictionary
+    """
+    from datetime import datetime
+    import numpy as np
+    
+    result = {}
+    for key, value in data.items():
+        if value is None:
+            # Skip None values
+            continue
+        elif isinstance(value, datetime):
+            # Convert datetime to ISO string
+            result[key] = value.isoformat()
+        elif isinstance(value, (np.integer, np.floating)):
+            # Convert numpy types to Python native types
+            result[key] = value.item()
+        elif isinstance(value, list):
+            if not value:
+                # Skip empty lists
+                continue
+            # Convert lists to list of strings (Pinecone requirement)
+            result[key] = [str(item) for item in value]
+        elif isinstance(value, dict):
+            # Skip nested dicts (Pinecone doesn't support them)
+            continue
+        elif isinstance(value, (str, int, float, bool)):
+            # Keep primitive types as-is
+            result[key] = value
+        else:
+            # Convert anything else to string (defensive)
+            result[key] = str(value)
+    return result
 
 
 class ChunkingService:
@@ -84,10 +149,6 @@ class ChunkingService:
             print(f"[Chunking] Storing chunks in Pinecone...")
             await self._store_in_pinecone(result)
             
-            # Step 5: Update document status
-            document.status = DocumentStatus.EMBEDDING  # Or COMPLETED if no embedding step
-            await document.save()
-            
             print(f"[Chunking] Document {document_id} chunking complete!")
             return result
             
@@ -153,21 +214,24 @@ class ChunkingService:
         # Prepare vectors for Pinecone
         vectors = []
         for i, chunk in enumerate(result.chunks):
+            # Build metadata - convert to Pinecone-compatible format
+            metadata = prepare_pinecone_metadata({
+                "case_id": chunk.case_id,
+                "document_id": chunk.document_id,
+                "chunk_index": chunk.chunk_index,
+                "text": chunk.text[:1000],  # Store preview (Pinecone metadata limit)
+                "document_filename": chunk.document_filename,
+                "classification": chunk.classification,
+                "content_category": chunk.content_category,
+                "page_numbers": chunk.page_numbers,  # Will be converted to list of strings
+                "block_ids": chunk.block_ids,         # Will be converted to list of strings
+                "token_count": chunk.token_count,
+            })
+            
             vector = {
                 "id": chunk.chunk_id,
                 "values": embeddings[i].tolist(),
-                "metadata": {
-                    "case_id": chunk.case_id,
-                    "document_id": chunk.document_id,
-                    "chunk_index": chunk.chunk_index,
-                    "text": chunk.text[:1000],  # Store preview (Pinecone metadata limit)
-                    "document_filename": chunk.document_filename,
-                    "classification": chunk.classification,
-                    "page_numbers": chunk.page_numbers,
-                    "block_ids": chunk.block_ids,
-                    "token_count": chunk.token_count,
-                    "content_category": chunk.content_category
-                }
+                "metadata": metadata
             }
             vectors.append(vector)
         

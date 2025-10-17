@@ -1,22 +1,42 @@
-"""Authentication configuration using NextAuth JWT validation."""
-import os
-from dotenv import load_dotenv
-from fastapi_nextauth_jwt import NextAuthJWT
+"""
+JWT Authentication for FastAPI using NextAuth JWT tokens.
+"""
 
-# Load environment variables from .env file
+import os
+from typing import Annotated
+from fastapi import Depends, HTTPException, status
+from fastapi_nextauth_jwt import NextAuthJWT
+from dotenv import load_dotenv
+
+# Load environment variables
 load_dotenv()
 
-# Initialize NextAuth JWT validator
-# This will automatically read AUTH_SECRET from environment variables
-auth_secret = os.getenv("AUTH_SECRET")
-if not auth_secret:
-    raise ValueError("AUTH_SECRET environment variable is not set")
+# Initialize JWT handler with shared secret
+JWT = NextAuthJWT(secret=os.getenv("AUTH_SECRET"))
 
-print(f"[Auth] Using AUTH_SECRET FULL: {auth_secret}")  # Full secret for debugging
-print(f"[Auth] AUTH_SECRET byte length: {len(auth_secret.encode('utf-8'))}")
+# Type alias for dependency injection
+JWTPayload = Annotated[dict, Depends(JWT)]
 
-JWT = NextAuthJWT(
-    secret=auth_secret,  # Must match your Next.js NEXTAUTH_SECRET
-    cookie_name="next-auth.session-token",  # Must match Next.js cookie name
-)
+def get_current_user_id(jwt: JWTPayload) -> str:
+    """Extract user ID from JWT payload."""
+    user_id = jwt.get("sub") or jwt.get("id")
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token: missing user ID"
+        )
+    return str(user_id)
 
+def get_current_user_email(jwt: JWTPayload) -> str:
+    """Extract user email from JWT payload."""
+    email = jwt.get("email")
+    if not email:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token: missing email"
+        )
+    return email
+
+# Convenience type aliases for common use cases
+CurrentUserID = Annotated[str, Depends(get_current_user_id)]
+CurrentUserEmail = Annotated[str, Depends(get_current_user_email)]

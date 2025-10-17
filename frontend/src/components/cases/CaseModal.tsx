@@ -37,13 +37,17 @@ export default function CaseModal({
     reset,
   } = useForm<CaseFormData>({
     resolver: zodResolver(caseSchema),
-    defaultValues: editCase || { name: '', description: '' },
+    defaultValues: editCase 
+      ? { name: editCase.name, description: editCase.description || '' }
+      : { name: '', description: '' },
   })
   
   // Reset form when modal opens/closes or editCase changes
   useEffect(() => {
     if (isOpen) {
-      reset(editCase || { name: '', description: '' })
+      reset(editCase 
+        ? { name: editCase.name, description: editCase.description || '' }
+        : { name: '', description: '' })
     }
   }, [isOpen, editCase, reset])
   

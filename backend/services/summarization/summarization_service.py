@@ -171,7 +171,10 @@ class SummarizationService:
         chunk_summaries: List[str],
         total_chunks: int
     ) -> None:
-        """Store summary in Elasticsearch for full-text search.
+        """Update document in Elasticsearch with summary.
+        
+        Updates the existing document in "documents" index (created by DocumentIndexingService).
+        Adds summary fields to the existing full_text/blocks document.
         
         Args:
             document_id: Document ID
@@ -182,27 +185,25 @@ class SummarizationService:
             total_chunks: Number of chunks
         """
         # Ensure index exists
-        await self.elasticsearch.create_index(settings.elasticsearch_index_summaries)
+        await self.elasticsearch.create_index("documents")
         
-        # Prepare document for indexing
-        es_document = {
-            "document_id": document_id,
-            "case_id": case_id,
-            "classification": document.classification,
-            "filename": document.filename,
-            "file_type": document.file_type,
-            "executive_summary": executive_summary,
-            "chunk_summaries": chunk_summaries,
-            "total_chunks": total_chunks,
-            "created_at": datetime.now().isoformat()
+        # Prepare update payload (only summary fields)
+        update_payload = {
+            "doc": {
+                "executive_summary": executive_summary,
+                "chunk_summaries": chunk_summaries,
+                "total_chunks": total_chunks,
+                "summarized_at": datetime.now().isoformat()
+            }
         }
         
-        # Index with predictable ID: doc_{document_id}
-        await self.elasticsearch.index_document(
-            index_name=settings.elasticsearch_index_summaries,
-            doc_id=f"doc_{document_id}",
-            document=es_document
+        # Update existing document (upsert in case indexing hasn't happened yet)
+        await self.elasticsearch.client.update(
+            index="documents",
+            id=f"doc_{document_id}",
+            body=update_payload,
+            doc_as_upsert=True  # Create if doesn't exist (defensive)
         )
         
-        print(f"[Elasticsearch] Indexed summary for doc {document_id}")
+        print(f"[Elasticsearch] Updated doc {document_id} with summary")
 
