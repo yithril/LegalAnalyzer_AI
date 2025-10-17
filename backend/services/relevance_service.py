@@ -74,9 +74,17 @@ class RelevanceService:
             document_metadata=metadata
         )
         
-        # Call LLM
+        # Call LLM with JSON format enforcement
         try:
-            response = await self.llm.generate_from_prompt(prompt, max_tokens=200)
+            # Use Ollama's JSON mode for guaranteed JSON output
+            llm_response = await self.llm.client.chat(
+                model='llama3.1:8b',
+                messages=[{'role': 'user', 'content': prompt}],
+                format='json',  # Ollama's JSON mode - guarantees valid JSON
+                options={'temperature': 0.3, 'num_predict': 200}
+            )
+            
+            response = llm_response['message']['content']
             result = self._parse_response(response)
             
             # Update document

@@ -43,7 +43,7 @@ async def test_real_llm_scores_enron_power_email():
         "999/documents/999/extraction/blocks.json",
         json.dumps(blocks_data).encode('utf-8')
     )
-    print("✓ Loaded pre-extracted blocks from test_data")
+    print("[OK] Loaded pre-extracted blocks from test_data")
     
     # Create service with mocked storage but REAL LLM
     service = RelevanceService(mock_storage)
@@ -107,15 +107,15 @@ async def test_real_llm_scores_enron_power_email():
             assert result.score >= 40, \
                 f"Expected moderate-to-high relevance for power contract email, got {result.score}"
             
-            print(f"\n✅ Test passed! LLM scored document as {result.score}/100")
+            print(f"\n[SUCCESS] Test passed! LLM scored document as {result.score}/100")
             
             # Show what was saved to document
             assert mock_doc.relevance_score == result.score
             assert mock_doc.relevance_reasoning == result.reasoning
-            print(f"✅ Document updated with relevance score")
+            print(f"[SUCCESS] Document updated with relevance score")
             
         except Exception as e:
-            print(f"\n❌ Test failed: {e}")
+            print(f"\n[ERROR] Test failed: {e}")
             print("\nPossible issues:")
             print("  - Is Ollama running? (ollama serve)")
             print("  - Is llama3.1:8b model available? (ollama pull llama3.1:8b)")
@@ -190,5 +190,5 @@ async def test_real_llm_irrelevant_case_context():
         assert result.score <= 30, \
             f"Expected low relevance for unrelated case, got {result.score}"
         
-        print(f"\n✅ Correctly scored as low relevance ({result.score}/100) for unrelated case!")
+        print(f"\n[SUCCESS] Correctly scored as low relevance ({result.score}/100) for unrelated case!")
 

@@ -2,7 +2,7 @@
 import json
 from datetime import datetime
 from core.models.document import Document
-from core.constants import DocumentStatus
+from core.constants import DocumentStatus, RELEVANCE_SCORE_TIMELINE_THRESHOLD
 from infrastructure.storage import storage_client
 from infrastructure.pinecone_client import pinecone_client
 from infrastructure.elasticsearch_client import elasticsearch_client
@@ -13,6 +13,7 @@ from services.relevance_service import RelevanceService
 from services.document_indexing_service import DocumentIndexingService
 from services.chunking.chunking_service import ChunkingService
 from services.summarization.summarization_service import SummarizationService
+from services.timeline_service import TimelineService
 
 
 class DocumentProcessor:
@@ -102,7 +103,10 @@ class DocumentProcessor:
             # Step 7: Summarize (OPTIONAL - continue if fails)
             await self._step_summarize(document_id, case_id)
             
-            # Step 8: Mark complete
+            # Step 8: Extract Timeline Events (OPTIONAL - only for relevant docs)
+            await self._step_extract_timeline_events(document_id, case_id)
+            
+            # Step 9: Mark complete
             await self._mark_complete(document_id)
             
             print(f"\n{'='*70}")
@@ -305,6 +309,48 @@ class DocumentProcessor:
             print(f"[Step 7] Summarization failed: {e}")
             document.has_summary = False
             await document.save()
+    
+    async def _step_extract_timeline_events(self, document_id: int, case_id: int):
+        """
+        Extract timeline events from document.
+        
+        Only runs for documents with relevance_score >= RELEVANCE_SCORE_TIMELINE_THRESHOLD.
+        """
+        print(f"\n[Pipeline] Step 8: Extract Timeline Events")
+        
+        try:
+            document = await Document.get(id=document_id)
+            
+            # Check relevance threshold
+            if not document.relevance_score or document.relevance_score < RELEVANCE_SCORE_TIMELINE_THRESHOLD:
+                print(f"[Pipeline] Skipping timeline extraction - relevance score "
+                      f"({document.relevance_score}) below threshold ({RELEVANCE_SCORE_TIMELINE_THRESHOLD})")
+                return
+            
+            print(f"[Pipeline] Document is relevant ({document.relevance_score}/100) - extracting timeline events")
+            
+            timeline_service = TimelineService(self.storage)
+            
+            # Extract facts
+            facts_result = await timeline_service.extract_facts(document_id, case_id)
+            print(f"[Pipeline] Extracted {len(facts_result.events)} potential events")
+            
+            if not facts_result.events:
+                print("[Pipeline] No events found in document")
+                return
+            
+            # Analyze and save timeline-worthy events
+            saved_count = 0
+            for fact in facts_result.events:
+                analysis = await timeline_service.analyze_legal_significance(fact, document_id, case_id)
+                timeline_event = await timeline_service.save_timeline_event(fact, analysis, document_id, case_id)
+                if timeline_event:
+                    saved_count += 1
+            
+            print(f"[Pipeline] Saved {saved_count}/{len(facts_result.events)} timeline events")
+            
+        except Exception as e:
+            print(f"[Pipeline] Timeline extraction failed (non-fatal): {e}")
     
     async def _mark_complete(self, document_id: int) -> None:
         """Mark document as fully processed.

@@ -47,11 +47,19 @@ async def setup_infrastructure():
 @pytest.fixture
 async def test_case(setup_infrastructure):
     """Create test case and clean up after."""
-    # Create case
+    # Create case with realistic description
     case = await Case.create(
         id=TEST_CASE_ID,
         name=TEST_CASE_NAME,
-        description="Integration test case for full pipeline verification"
+        description=(
+            "This case involves allegations of market manipulation and improper "
+            "power trading practices by Enron Canada Corporation in the Alberta "
+            "power market between 2001-2002. The investigation focuses on contract "
+            "modifications, source asset changes, and trading relationships with "
+            "Alberta power companies including Lethbridge Ironworks and Power Pool "
+            "of Alberta. Key issues include whether contract registrations were "
+            "modified to circumvent market regulations and manipulate electricity prices."
+        )
     )
     
     yield case
@@ -108,7 +116,7 @@ async def test_enron_email_full_pipeline(test_case):
         data=file_content,
         content_type="text/plain"
     )
-    print(f"✓ Uploaded to MinIO: legal-documents/{file_key}")
+    print(f"[OK] Uploaded to MinIO: legal-documents/{file_key}")
     
     # ============================================
     # STEP 2: Create Document record
@@ -124,7 +132,7 @@ async def test_enron_email_full_pipeline(test_case):
         minio_key=file_key,  # "originals/43.txt"
         status=DocumentStatus.UPLOADED
     )
-    print(f"✓ Created document: {document.id}")
+    print(f"[OK] Created document: {document.id}")
     
     # ============================================
     # STEP 3: Process document (orchestrator)
@@ -137,7 +145,7 @@ async def test_enron_email_full_pipeline(test_case):
     # Run orchestrator synchronously
     await processor.process_document(document.id, TEST_CASE_ID)
     
-    print(f"✓ Document processing completed")
+    print(f"[OK] Document processing completed")
     
     # ============================================
     # STEP 4: Verify in PostgreSQL
@@ -158,12 +166,12 @@ async def test_enron_email_full_pipeline(test_case):
     assert 0 <= document.relevance_score <= 100, \
         f"Relevance score out of range: {document.relevance_score}"
     
-    print(f"✓ Document status: {document.status}")
-    print(f"✓ Classification: {document.classification}")
-    print(f"✓ Content category: {document.content_category}")
-    print(f"✓ Relevance score: {document.relevance_score}/100")
-    print(f"✓ Relevance reasoning: {document.relevance_reasoning}")
-    print(f"✓ Has summary: {document.has_summary}")
+    print(f"[OK] Document status: {document.status}")
+    print(f"[OK] Classification: {document.classification}")
+    print(f"[OK] Content category: {document.content_category}")
+    print(f"[OK] Relevance score: {document.relevance_score}/100")
+    print(f"[OK] Relevance reasoning: {document.relevance_reasoning}")
+    print(f"[OK] Has summary: {document.has_summary}")
     
     # ============================================
     # STEP 5: Verify in MinIO
@@ -173,19 +181,19 @@ async def test_enron_email_full_pipeline(test_case):
     # Check original file exists (in legal-documents bucket)
     original_objects = await storage_client.list_objects("legal-documents", prefix=file_key)
     assert file_key in original_objects, "Original file not found in MinIO"
-    print(f"✓ Original file exists: legal-documents/{file_key}")
+    print(f"[OK] Original file exists: legal-documents/{file_key}")
     
     # Check extraction blocks exist (in cases bucket)
     blocks_key = f"{TEST_CASE_ID}/documents/{document.id}/extraction/blocks.json"
     blocks_objects = await storage_client.list_objects("cases", prefix=blocks_key)
     assert blocks_key in blocks_objects, "Extraction blocks not found in MinIO"
-    print(f"✓ Extraction blocks exist: cases/{blocks_key}")
+    print(f"[OK] Extraction blocks exist: cases/{blocks_key}")
     
     # Check chunks backup exists (in cases bucket)
     chunks_key = f"{TEST_CASE_ID}/documents/{document.id}/chunks/chunks.json"
     chunks_objects = await storage_client.list_objects("cases", prefix=chunks_key)
     assert chunks_key in chunks_objects, "Chunks backup not found in MinIO"
-    print(f"✓ Chunks backup exists: cases/{chunks_key}")
+    print(f"[OK] Chunks backup exists: cases/{chunks_key}")
     
     # ============================================
     # STEP 6: Verify in Pinecone
@@ -204,13 +212,13 @@ async def test_enron_email_full_pipeline(test_case):
         include_metadata=True
     )
     
-    print(f"✓ Found {len(all_results)} total embeddings for case_id={TEST_CASE_ID}")
+    print(f"[OK] Found {len(all_results)} total embeddings for case_id={TEST_CASE_ID}")
     
     # Filter to only this document's embeddings (might have old test data)
     doc_results = [r for r in all_results if r["metadata"]["document_id"] == document.id]
     
     assert len(doc_results) > 0, f"No embeddings found for document {document.id}"
-    print(f"✓ Found {len(doc_results)} embeddings for this document")
+    print(f"[OK] Found {len(doc_results)} embeddings for this document")
     
     # Verify metadata on our document's embeddings
     for match in doc_results:
@@ -219,8 +227,8 @@ async def test_enron_email_full_pipeline(test_case):
         assert match["metadata"]["document_id"] == document.id, \
             f"Wrong document_id in metadata: {match['metadata']['document_id']}"
     
-    print(f"✓ All embeddings have correct case_id={TEST_CASE_ID} and document_id={document.id}")
-    print(f"✓ Document chunked into {len(doc_results)} semantic chunks")
+    print(f"[OK] All embeddings have correct case_id={TEST_CASE_ID} and document_id={document.id}")
+    print(f"[OK] Document chunked into {len(doc_results)} semantic chunks")
     
     # ============================================
     # STEP 7: Verify in Elasticsearch
@@ -234,14 +242,14 @@ async def test_enron_email_full_pipeline(test_case):
     )
     
     assert es_doc is not None, "Document not found in Elasticsearch"
-    print(f"✓ Document found in Elasticsearch")
+    print(f"[OK] Document found in Elasticsearch")
     
     # Verify full_text (from DocumentIndexingService)
     full_text = es_doc.get("full_text", "")
     assert len(full_text) > 100, "Full text too short"
     assert "power" in full_text.lower() or "pool" in full_text.lower(), \
         "Full text doesn't contain expected content"
-    print(f"✓ Full text indexed: {len(full_text)} characters")
+    print(f"[OK] Full text indexed: {len(full_text)} characters")
     
     # Verify blocks (from DocumentIndexingService)
     blocks = es_doc.get("blocks", [])
@@ -249,16 +257,16 @@ async def test_enron_email_full_pipeline(test_case):
     assert "block_id" in blocks[0], "Block structure invalid"
     assert "text" in blocks[0], "Block missing text"
     # Blocks have all original fields from extraction
-    print(f"✓ Blocks indexed: {len(blocks)} blocks")
-    print(f"✓ Block fields preserved: {list(blocks[0].keys())}")
+    print(f"[OK] Blocks indexed: {len(blocks)} blocks")
+    print(f"[OK] Block fields preserved: {list(blocks[0].keys())}")
     
     # Verify summary (from SummarizationService)
     summary_text = es_doc.get("executive_summary", "")
     assert summary_text is not None and len(summary_text) > 50, "Summary missing or too short"
     assert "power" in summary_text.lower() or "contract" in summary_text.lower() or "pool" in summary_text.lower(), \
         "Summary doesn't contain expected business terms"
-    print(f"✓ Summary added: {len(summary_text)} characters")
-    print(f"✓ Summary preview: {summary_text[:200]}...")
+    print(f"[OK] Summary added: {len(summary_text)} characters")
+    print(f"[OK] Summary preview: {summary_text[:200]}...")
     
     # Show complete Elasticsearch document structure
     print("\n" + "="*70)
@@ -301,11 +309,11 @@ async def test_enron_email_full_pipeline(test_case):
         assert match["metadata"]["case_id"] == TEST_CASE_ID, \
             f"Found embedding with wrong case_id: {match['metadata']['case_id']}"
     
-    print(f"✓ Case isolation working: all {len(all_results)} results have case_id={TEST_CASE_ID}")
+    print(f"[OK] Case isolation working: all {len(all_results)} results have case_id={TEST_CASE_ID}")
     
     # Show breakdown by document
     doc_ids = set(r["metadata"]["document_id"] for r in all_results)
-    print(f"✓ Found embeddings from {len(doc_ids)} documents: {sorted(doc_ids)}")
+    print(f"[OK] Found embeddings from {len(doc_ids)} documents: {sorted(doc_ids)}")
     print(f"  → Current document {document.id}: {len(doc_results)} embeddings")
     
     # ============================================
@@ -322,7 +330,7 @@ async def test_enron_email_full_pipeline(test_case):
                 index_name=index_name,
                 ids=vector_ids
             )
-            print(f"✓ Deleted {len(vector_ids)} embeddings for document {document.id}")
+            print(f"[OK] Deleted {len(vector_ids)} embeddings for document {document.id}")
     except Exception as e:
         print(f"⚠ Pinecone cleanup failed: {e}")
     
@@ -333,7 +341,7 @@ async def test_enron_email_full_pipeline(test_case):
             index_name="documents",
             doc_id=f"doc_{document.id}"
         )
-        print(f"✓ Deleted document from Elasticsearch")
+        print(f"[OK] Deleted document from Elasticsearch")
     except Exception as e:
         print(f"⚠ Elasticsearch cleanup failed: {e}")
     
@@ -361,7 +369,7 @@ async def test_enron_email_full_pipeline(test_case):
                 await storage_client.delete("cases", obj)
         except:
             pass
-        print(f"✓ Deleted files from MinIO")
+        print(f"[OK] Deleted files from MinIO")
     except Exception as e:
         print(f"⚠ MinIO cleanup failed: {e}")
     
@@ -370,11 +378,11 @@ async def test_enron_email_full_pipeline(test_case):
         print("Deleting from PostgreSQL...")
         await document.delete()
         # Case will be deleted by fixture cleanup
-        print(f"✓ Deleted document from PostgreSQL")
+        print(f"[OK] Deleted document from PostgreSQL")
     except Exception as e:
         print(f"⚠ PostgreSQL cleanup failed: {e}")
     
-    print("\n✅ ALL TESTS PASSED - Pipeline working end-to-end!")
+    print("\n[SUCCESS] ALL TESTS PASSED - Pipeline working end-to-end!")
 
 
 @pytest.mark.integration
@@ -401,8 +409,8 @@ async def test_case_id_filtering(test_case):
         # Verify all have correct case_id
         for match in results.matches:
             assert match.metadata["case_id"] == TEST_CASE_ID
-        print(f"✓ Case filtering works: {len(results.matches)} embeddings found")
+        print(f"[OK] Case filtering works: {len(results.matches)} embeddings found")
     else:
         # If no results, that's OK (cleanup happened)
-        print("✓ No embeddings found (already cleaned up)")
+        print("[OK] No embeddings found (already cleaned up)")
 

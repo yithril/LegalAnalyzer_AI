@@ -87,7 +87,8 @@ IMPORTANT:
 - Historical context and background can be valuable even from earlier periods
 - Be balanced - don't over-score tangential content or under-score valuable context
 
-Return ONLY valid JSON (no other text):
+CRITICAL: You MUST return ONLY the JSON object below. Do NOT include any explanatory text, markdown, or other content. Just the raw JSON.
+
 {{
   "score": <integer 0-100>,
   "reasoning": "<brief 1-2 sentence explanation>",
